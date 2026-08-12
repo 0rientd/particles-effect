@@ -7,7 +7,7 @@
 const int FRAME_TIME = 16;
 const int WINDOW_WIDTH = 150;
 const int WINDOW_HEIGHT = 150;
-const int MAX_PARTICLES = 10;
+const int MAX_PARTICLES = 20;
 
 float position_y = 0.0f;
 
@@ -54,6 +54,15 @@ int main() {
 
     if (position_y >= WINDOW_HEIGHT) {
       position_y = 1.0f;
+
+      particles.clear();
+
+      for (int i = 0; i <= MAX_PARTICLES; i++) {
+        Particle *p = new Particle();
+        p->initial_position = dist(gen);
+        p->color = PickAColor(dist2(gen));
+        particles.push_back(p);
+      }
     } else {
       position_y++;
     }
