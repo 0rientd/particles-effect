@@ -1,59 +1,30 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_render.h>
+#include "../include/particles.hpp"
+
 #include <random>
 #include <vector>
 
+// frame time 16ms = 60fps
+const int FRAME_TIME = 16;
 const int WINDOW_WIDTH = 150;
 const int WINDOW_HEIGHT = 150;
 const int MAX_PARTICLES = 10;
-float position = 0.0f;
+
+float position_y = 0.0f;
 
 std::random_device rd;
 std::mt19937 gen(rd());
 std::uniform_int_distribution<> dist(0, WINDOW_WIDTH - 1);
 std::uniform_int_distribution<> dist2(0, 4);
 
-struct Particle_Color {
-  std::vector<int> color1 = {35, 61, 77, 255};
-  std::vector<int> color2 = {254, 127, 45, 255};
-  std::vector<int> color3 = {234, 236, 240, 255};
-  std::vector<int> color4 = {236, 91, 56, 255};
-};
-
-struct Particle {
-  int initial_position;
-  std::vector<int> color;
-};
-
-std::vector<int> PickAColor(int random_number) {
-  Particle_Color colors;
-
-  switch (random_number) {
-  case 1:
-    return colors.color1;
-    break;
-  case 2:
-    return colors.color2;
-    break;
-  case 3:
-    return colors.color3;
-    break;
-  case 4:
-    return colors.color4;
-    break;
-  }
-
-  return std::vector<int>{255, 255, 255, 255};
-}
-
 int main() {
-  srand(static_cast<unsigned>(SDL_GetTicks()));
-  bool running = true;
+  SDL_Window *window = nullptr;
+  SDL_Renderer *renderer = nullptr;
 
   std::vector<Particle *> particles = {};
 
-  SDL_Window *window = nullptr;
-  SDL_Renderer *renderer = nullptr;
+  bool running = true;
+
+  srand(static_cast<unsigned>(SDL_GetTicks()));
 
   SDL_CreateWindowAndRenderer(WINDOW_WIDTH * 5, WINDOW_HEIGHT * 5, 0, &window,
                               &renderer);
@@ -68,6 +39,7 @@ int main() {
 
   while (running) {
     SDL_Event event;
+
     while (SDL_PollEvent(&event)) {
       if (event.type == SDL_QUIT ||
           (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
@@ -78,8 +50,12 @@ int main() {
     for (auto *p : particles) {
       SDL_SetRenderDrawColor(renderer, p->color[0], p->color[1], p->color[2],
                              p->color[3]);
-      SDL_RenderDrawPoint(renderer, p->initial_position,
-                          position += 1.0f / 100.0f);
+      if (position_y >= WINDOW_HEIGHT) {
+        SDL_RenderDrawPoint(renderer, p->initial_position, position_y = 1.0f);
+      } else {
+        SDL_RenderDrawPoint(renderer, p->initial_position,
+                            position_y += 1.0f / FRAME_TIME);
+      }
 
       SDL_RenderPresent(renderer);
     }
@@ -87,8 +63,8 @@ int main() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    position++;
-    SDL_Delay(50);
+    position_y++;
+    SDL_Delay(FRAME_TIME);
   }
 
   return 0;
