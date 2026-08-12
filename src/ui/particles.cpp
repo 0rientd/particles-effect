@@ -20,3 +20,14 @@ std::vector<int> PickAColor(int random_number) {
 
   return std::vector<int>{255, 255, 255, 255};
 }
+
+void renderParticles(SDL_Renderer *renderer, int position_y,
+                     std::vector<Particle *> particles) {
+  for (auto *p : particles) {
+    SDL_SetRenderDrawColor(renderer, p->color[0], p->color[1], p->color[2],
+                           p->color[3]);
+    SDL_RenderDrawPoint(renderer, p->initial_position, position_y);
+  }
+
+  SDL_RenderPresent(renderer);
+}

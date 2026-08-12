@@ -17,3 +17,5 @@ struct Particle {
 };
 
 std::vector<int> PickAColor(int random_number);
+void renderParticles(SDL_Renderer *renderer, int position_y,
+                     std::vector<Particle *> particles);

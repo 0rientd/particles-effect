@@ -47,23 +47,17 @@ int main() {
       }
     }
 
-    for (auto *p : particles) {
-      SDL_SetRenderDrawColor(renderer, p->color[0], p->color[1], p->color[2],
-                             p->color[3]);
-      if (position_y >= WINDOW_HEIGHT) {
-        SDL_RenderDrawPoint(renderer, p->initial_position, position_y = 1.0f);
-      } else {
-        SDL_RenderDrawPoint(renderer, p->initial_position,
-                            position_y += 1.0f / FRAME_TIME);
-      }
-
-      SDL_RenderPresent(renderer);
-    }
-
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    position_y++;
+    renderParticles(renderer, position_y, particles);
+
+    if (position_y >= WINDOW_HEIGHT) {
+      position_y = 1.0f;
+    } else {
+      position_y++;
+    }
+
     SDL_Delay(FRAME_TIME);
   }
 
