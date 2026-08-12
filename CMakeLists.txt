@@ -13,6 +13,7 @@ find_package(SDL2 REQUIRED)
 add_executable(particles
     src/main.cpp
     src/ui/particles.cpp
+    src/core/particle_manager.cpp
 )
 
 target_compile_options(particles PRIVATE

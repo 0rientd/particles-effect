@@ -1,6 +1,6 @@
 #include "../include/particles.hpp"
+#include <../include/particle_manager.hpp>
 
-#include <random>
 #include <vector>
 
 // frame time 16ms = 60fps
@@ -10,11 +10,6 @@ const int WINDOW_HEIGHT = 150;
 const int MAX_PARTICLES = 20;
 
 float position_y = 0.0f;
-
-std::random_device rd;
-std::mt19937 gen(rd());
-std::uniform_int_distribution<> dist(0, WINDOW_WIDTH - 1);
-std::uniform_int_distribution<> dist2(0, 4);
 
 int main() {
   SDL_Window *window = nullptr;
@@ -30,12 +25,7 @@ int main() {
                               &renderer);
   SDL_RenderSetScale(renderer, 5, 5);
 
-  for (int i = 0; i <= MAX_PARTICLES; i++) {
-    Particle *p = new Particle();
-    p->initial_position = dist(gen);
-    p->color = PickAColor(dist2(gen));
-    particles.push_back(p);
-  }
+  particles = particlesLoader(MAX_PARTICLES);
 
   while (running) {
     SDL_Event event;
@@ -56,13 +46,7 @@ int main() {
       position_y = 1.0f;
 
       particles.clear();
-
-      for (int i = 0; i <= MAX_PARTICLES; i++) {
-        Particle *p = new Particle();
-        p->initial_position = dist(gen);
-        p->color = PickAColor(dist2(gen));
-        particles.push_back(p);
-      }
+      particles = particlesLoader(MAX_PARTICLES);
     } else {
       position_y++;
     }
